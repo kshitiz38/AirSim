@@ -37,6 +37,17 @@ class LandedState:
     Landed = 0
     Flying = 1
 
+class WeatherParameter:
+    Rain = 0
+    Roadwetness = 1
+    Snow = 2
+    RoadSnow = 3
+    MapleLeaf = 4
+    RoadLeaf = 5
+    Dust = 6
+    Fog = 7
+    Enabled = 8
+
 class Vector3r(MsgpackMixin):
     x_val = 0.0
     y_val = 0.0
@@ -77,7 +88,7 @@ class Vector3r(MsgpackMixin):
 
     def cross(self, other):
         if type(self) == type(other):
-            cross_product = np.cross(self.to_numpy_array(), other.to_numpy_array)
+            cross_product = np.cross(self.to_numpy_array(), other.to_numpy_array())
             return Vector3r(cross_product[0], cross_product[1], cross_product[2])
         else:
             raise TypeError('unsupported operand type(s) for \'cross\': %s and %s' % ( str(type(self)), str(type(other))) )

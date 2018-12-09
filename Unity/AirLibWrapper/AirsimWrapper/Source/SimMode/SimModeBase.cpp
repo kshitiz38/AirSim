@@ -73,6 +73,19 @@ void SimModeBase::continueForTime(double seconds)
 	throw std::domain_error("continueForTime is not implemented by SimMode");
 }
 
+void SimModeBase::setTimeOfDay(bool is_enabled, const std::string& start_datetime, bool is_start_datetime_dst,
+    float celestial_clock_speed, float update_interval_secs, bool move_sun)
+{
+        unused(is_enabled);
+        unused(start_datetime);
+        unused(is_start_datetime_dst);
+        unused(celestial_clock_speed);
+        unused(update_interval_secs);
+        unused(move_sun);
+        //commenting this out for now to avoid unintentional Unity startup failure
+        //throw std::domain_error("setTimeOfDay is not implemented by SimMode");
+}
+
 std::unique_ptr<msr::airlib::ApiServerBase> SimModeBase::createApiServer() const
 {
 	//this will be the case when compilation with RPCLIB is disabled or simmode doesn't support APIs
@@ -126,7 +139,7 @@ void SimModeBase::startApiServer()
 		api_server_ = createApiServer();
 #endif
 		try {
-			api_server_->start();
+			api_server_->start(false, 4); //TODO: set thread for vehicle count
 		}
 		catch (std::exception& ex) {
 			PrintLogMessage("Cannot start RpcLib Server", ex.what(), vehicle_name_.c_str(), ErrorLogSeverity::Error);
@@ -220,7 +233,9 @@ std::unique_ptr<PawnSimApi> SimModeBase::createVehicleSimApi(
 	const PawnSimApi::Params& pawn_sim_api_params) const
 {
 	unused(pawn_sim_api_params);
-	return std::unique_ptr<PawnSimApi>();
+    auto sim_api = std::unique_ptr<PawnSimApi>();
+    sim_api->initialize();
+    return sim_api;
 }
 
 msr::airlib::VehicleApiBase* SimModeBase::getVehicleApi(const PawnSimApi::Params& pawn_sim_api_params,

@@ -499,7 +499,7 @@ private:
 
         physics_engine_name = settings_json.getString("PhysicsEngineName", "");
         if (physics_engine_name == "") {
-            if (simmode_name == "Multirotor")
+            if (simmode_name == "Multirotor" || simmode_name == "Both")
                 physics_engine_name = "FastPhysicsEngine";
             else
                 physics_engine_name = "PhysX"; //this value is only informational for now
@@ -1042,7 +1042,7 @@ private:
         }
 
         if (std::isnan(camera_director.follow_distance)) {
-            if (simmode_name == "Car")
+            if (simmode_name == "Car" || simmode_name == "Both")
                 camera_director.follow_distance = -8;
             else
                 camera_director.follow_distance = -3;
@@ -1052,7 +1052,7 @@ private:
         if (std::isnan(camera_director.position.y()))
             camera_director.position.y() = 0;
         if (std::isnan(camera_director.position.z())) {
-            if (simmode_name == "Car")
+            if (simmode_name == "Car" || simmode_name == "Both")
                 camera_director.position.z() = -4;
             else
                 camera_director.position.z() = -2;
@@ -1068,7 +1068,7 @@ private:
             clock_type = "ScalableClock";
 
             //override if multirotor simmode with simple_flight
-            if (simmode_name == "Multirotor") {
+            if (simmode_name == "Multirotor" || simmode_name == "Both"){
                 //TODO: this won't work if simple_flight and PX4 is combined together!
 
                 //for multirotors we select steppable fixed interval clock unless we have
@@ -1236,7 +1236,7 @@ private:
     static void createDefaultSensorSettings(const std::string& simmode_name,
         std::map<std::string, std::unique_ptr<SensorSetting>>& sensors)
     {
-        if (simmode_name == "Multirotor") {
+        if (simmode_name == "Multirotor" || simmode_name == "Both"){
             sensors["imu"] = createSensorSetting(SensorBase::SensorType::Imu, "imu", true);
             sensors["magnetometer"] = createSensorSetting(SensorBase::SensorType::Magnetometer, "magnetometer", true);
             sensors["gps"] = createSensorSetting(SensorBase::SensorType::Gps, "gps", true);

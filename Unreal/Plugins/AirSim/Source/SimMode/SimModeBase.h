@@ -76,7 +76,7 @@ public:
 protected: //must overrides
     typedef msr::airlib::AirSimSettings AirSimSettings;
 
-    virtual std::unique_ptr<msr::airlib::ApiServerBase> createApiServer() const;
+    virtual std::vector<std::unique_ptr<msr::airlib::ApiServerBase>> createApiServer() const;
     virtual void getExistingVehiclePawns(TArray<AActor*>& pawns) const;
     virtual bool isVehicleTypeSupported(const std::string& vehicle_type) const;
     virtual std::string getVehiclePawnPathName(const AirSimSettings::VehicleSetting& vehicle_setting) const;
@@ -96,6 +96,9 @@ protected: //optional overrides
     void initializeCameraDirector(const FTransform& camera_transform, float follow_distance);
     void checkVehicleReady(); //checks if vehicle is available to use
     virtual void updateDebugReport(msr::airlib::StateReporterWrapper& debug_reporter);
+
+    void addPawnToMap(APawn* pawn, const std::string& vehicle_type) const;
+    std::string getVehicleType(APawn* pawn) const;
 
 protected: //Utility methods for derived classes
     virtual const msr::airlib::AirSimSettings& getSettings() const;
@@ -128,7 +131,7 @@ private:
     std::unique_ptr<NedTransform> global_ned_transform_;
     std::unique_ptr<msr::airlib::WorldSimApiBase> world_sim_api_;
     std::unique_ptr<msr::airlib::ApiProvider> api_provider_;
-    std::unique_ptr<msr::airlib::ApiServerBase> api_server_;
+    std::vector<std::unique_ptr<msr::airlib::ApiServerBase>> api_servers_;
     msr::airlib::StateReporterWrapper debug_reporter_;
 
     std::vector<std::unique_ptr<msr::airlib::VehicleSimApiBase>> vehicle_sim_apis_;
@@ -136,8 +139,10 @@ private:
     UPROPERTY()
         TArray<AActor*> spawned_actors_; //keep refs alive from Unreal GC
 
-    bool lidar_checks_done_ = false; 
+    bool lidar_checks_done_ = false;
     bool lidar_draw_debug_points_ = false;
+
+    mutable std::map<APawn*, std::string> pawn_to_vehichle_;
 
 private:
     void setStencilIDs();

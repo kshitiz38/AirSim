@@ -17,13 +17,16 @@
 #include "api/RpcLibServerBase.hpp"
 
 
-std::unique_ptr<msr::airlib::ApiServerBase> ASimModeComputerVision::createApiServer() const
+std::vector<std::unique_ptr<msr::airlib::ApiServerBase>> ASimModeComputerVision::createApiServer() const
 {
+    std::vector<std::unique_ptr<msr::airlib::ApiServerBase>> api_servers;
 #ifdef AIRLIB_NO_RPC
-    return ASimModeBase::createApiServer();
+    api_servers.push_back(ASimModeBase::createApiServer());
+    return api_servers;
 #else
-    return std::unique_ptr<msr::airlib::ApiServerBase>(new msr::airlib::RpcLibServerBase(
-        getApiProvider(), getSettings().api_server_address));
+    api_servers.push_back(std::unique_ptr<msr::airlib::ApiServerBase>(new msr::airlib::RpcLibServerBase(
+        getApiProvider(), getSettings().api_server_address)));
+    return api_servers;
 #endif
 }
 

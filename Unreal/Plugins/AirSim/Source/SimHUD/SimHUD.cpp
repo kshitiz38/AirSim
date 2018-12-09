@@ -4,6 +4,7 @@
 #include "Misc/FileHelper.h"
 
 #include "Vehicles/Multirotor/SimModeWorldMultiRotor.h"
+#include "Vehicles/Multirotor/SimModeWorldBoth.h"
 #include "Vehicles/Car/SimModeCar.h"
 #include "Vehicles/ComputerVision/SimModeComputerVision.h"
 
@@ -273,10 +274,17 @@ std::vector<ASimHUD::AirSimSettings::SubwindowSetting>& ASimHUD::getSubWindowSet
 std::string ASimHUD::getSimModeFromUser()
 {
     if (EAppReturnType::No == UAirBlueprintLib::ShowMessage(EAppMsgType::YesNo,
-        "Would you like to use car simulation? Choose no to use quadrotor simulation.",
+        "Would you like to use only car simulation? Choose no to use quadrotor/both simulation.",
         "Choose Vehicle"))
     {
-        return "Multirotor";
+        if (EAppReturnType::No == UAirBlueprintLib::ShowMessage(EAppMsgType::YesNo,
+            "Would you like to simulate both quadrotor and car? Choose no to use both simulation.",
+            "Choose Vehicle"))
+        {
+            return "Multirotor";
+        }
+        else
+            return "Both";
     }
     else
         return "Car";
@@ -291,7 +299,10 @@ void ASimHUD::createSimMode()
 
     //spawn at origin. We will use this to do global NED transforms, for ex, non-vehicle objects in environment
     if (simmode_name == "Multirotor")
-        simmode_ = this->GetWorld()->SpawnActor<ASimModeWorldMultiRotor>(FVector::ZeroVector, 
+        simmode_ = this->GetWorld()->SpawnActor<ASimModeWorldMultiRotor>(FVector::ZeroVector,
+            FRotator::ZeroRotator, simmode_spawn_params);
+    else if (simmode_name == "Both")
+        simmode_ = this->GetWorld()->SpawnActor<ASimModeWorldBoth>(FVector::ZeroVector,
             FRotator::ZeroRotator, simmode_spawn_params);
     else if (simmode_name == "Car")
         simmode_ = this->GetWorld()->SpawnActor<ASimModeCar>(FVector::ZeroVector,

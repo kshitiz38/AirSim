@@ -148,7 +148,8 @@ AsyncResult<bool> MavLinkVehicleImpl::allowFlightControlOverUsb()
 
 void MavLinkVehicleImpl::handleMessage(std::shared_ptr<MavLinkConnection> connection, const MavLinkMessage& msg)
 {
-    unused(connection);
+    MavLinkNodeImpl::handleMessage(connection, msg);
+
     //status messages should usually be only sent by actual PX4. However if someone else is sending it to, we should listen it.
     //in future it would be good to have ability to add system IDs we are interested in
     //if (msg.sysid != getTargetSystemId())
@@ -178,7 +179,11 @@ void MavLinkVehicleImpl::handleMessage(std::shared_ptr<MavLinkConnection> connec
             int submode = (custom >> 8);
 
             bool isOffboard = (mode == PX4_CUSTOM_MAIN_MODE_OFFBOARD);
-            if (vehicle_state_.controls.offboard != isOffboard) {
+            if (isOffboard) {
+                vehicle_state_.controls.offboard = isOffboard;
+                Utils::log("MavLinkVehicle: confirmed offboard mode\n");
+            }
+            else if (vehicle_state_.controls.offboard != isOffboard) {
                 vehicle_state_.controls.offboard = isOffboard;
                 Utils::log("MavLinkVehicle: is no longer in offboard mode\n");
             }

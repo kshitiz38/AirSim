@@ -74,11 +74,11 @@ int main()
     client.takeoffAsync(5)->waitOnLastTask();
 
     cout << "Press Enter to move 5 meters in x direction with 1 m/s velocity" << endl; cin.get();  
-    auto position = client.getPosition(); // from current location
+    auto position = client.getMultirotorState().getPosition(); // from current location
     client.moveToPositionAsync(position.x() + 5, position.y(), position.z(), 1)->waitOnLastTask();
 
     cout << "Press Enter to land" << endl; cin.get();
-    client.landAync()->waitOnLastTask();
+    client.landAsync()->waitOnLastTask();
 
     return 0;
 }

@@ -20,6 +20,7 @@ void CarPawnSimApi::initialize()
     createVehicleApi(static_cast<ACarPawn*>(params_.pawn), params_.home_geopoint);
 
     //TODO: should do reset() here?
+    CarPawnSimApi::reset();
     joystick_controls_ = CarPawnApi::CarControls();
 }
 

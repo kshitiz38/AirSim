@@ -125,7 +125,7 @@ std::unique_ptr<PawnSimApi> ASimModeCar::createVehicleSimApi(
     auto vehicle_sim_api = std::unique_ptr<PawnSimApi>(new CarPawnSimApi(pawn_sim_api_params, 
         vehicle_pawn->getKeyBoardControls(), vehicle_pawn->getVehicleMovementComponent()));
     vehicle_sim_api->initialize();
-    vehicle_sim_api->reset();
+    // vehicle_sim_api->reset();
     return vehicle_sim_api;
 }
 msr::airlib::VehicleApiBase* ASimModeCar::getVehicleApi(const PawnSimApi::Params& pawn_sim_api_params,
